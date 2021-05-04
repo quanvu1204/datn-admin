@@ -1,0 +1,155 @@
+@import '../../common/sass/theme/variables';
+
+.notification {
+    $root: &;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    border-radius: 3px 2px 2px 3px;
+    position: relative;
+    min-height: 63px;
+
+    &__icon {
+        width: 34px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 2px 0px 0px 2px;
+        flex-shrink: 0;
+
+        .fa {
+            color: $white;
+            font-size: initial;
+            margin-left: 4px;
+        }
+    }
+
+    &__body {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        border-radius: 0px 2px 2px 0px;
+    }
+
+    &__line {
+        border: 0 none;
+        border-right: 1px dashed;
+        background: none;
+        margin: 2px;
+    }
+
+    &__wrapper {
+        padding: 16px 24px 16px 14px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        width: 100%;
+        background-color: $white;
+    }
+
+    &__title {
+        font-weight: bold;
+        color: $black;
+    }
+
+    &__content {
+        line-height: 19px;
+        color: $black;
+    }
+
+    &__close {
+        position: absolute;
+        top: 12px;
+        right: 14px;
+        transition: all 0.2s ease-in-out;
+
+        &:hover,
+        &:focus {
+            transform: scale(1.2);
+        }
+    }
+
+    &--success {
+        background-color: $notification-success;
+
+        #{$root}__body {
+            border: 2px solid $notification-success;
+        }
+    }
+
+    &--info {
+        background-color: $notification-info;
+
+        #{$root}__body {
+            border: 2px solid $notification-info;
+        }
+    }
+
+    &--warning {
+        background-color: $notification-warning;
+
+        #{$root}__body {
+            border: 2px solid $notification-warning
+        }
+    }
+
+    &--error {
+        background-color: $notification-error;
+
+        #{$root}__body {
+            border: 2px solid $notification-error
+        }
+    }
+}
+
+// override toastify basic styles, only use component styling
+.Toastify__toast-container {
+    max-width: 430px;
+    width: 100%;
+}
+
+@keyframes pullIn {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0%);
+    }
+}
+
+.pullIn {
+    animation-name: pullIn;
+    animation-timing-function: cubic-bezier(0.17, 0.66, 0.08, 0.95);
+}
+
+@keyframes fadeOutRight {
+    from {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+}
+
+.fadeOutRight {
+    animation-name: fadeOutRight;
+}
+
+@media only screen and (max-width: 480px) {
+    .Toastify {
+        &__toast-container {
+            padding: 4px !important;
+            left: auto !important;
+            right: 0 !important;
+        }
+    }
+}
