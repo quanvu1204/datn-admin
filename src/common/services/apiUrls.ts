@@ -1,4 +1,5 @@
 export const apiUrl = {
     login: 'auth/admin-login',
-    listCustomer: 'admin/list-customer',
+    listCustomers: 'admin/list-customer',
+    listDevices: 'device/get-all',
 };

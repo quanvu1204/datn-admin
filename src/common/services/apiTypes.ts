@@ -15,4 +15,15 @@ export interface CustomerDTO {
     lastName: string;
     sex: string;
     updatedAt: string;
+    customerDevice: { id: string; device: DeviceDTO }[];
+}
+
+export interface DeviceDTO {
+    id: string;
+    name: string;
+    ip: string;
+    status: string;
+    deleted: boolean;
+    createdAt?: Date;
+    updatedAt?: Date;
 }

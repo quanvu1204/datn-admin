@@ -1,6 +1,6 @@
 import { AxiosClient } from '../utils/axiosClient';
 
-import { CustomerDTO, ResponseType } from './apiTypes';
+import { CustomerDTO, DeviceDTO, ResponseType } from './apiTypes';
 import { apiUrl } from './apiUrls';
 
 const services = {
@@ -8,8 +8,12 @@ const services = {
         const { data } = await AxiosClient.post(apiUrl.login, params);
         return data;
     },
-    getCustomer: async (): Promise<ResponseType<{ count: number; rows: CustomerDTO[] }>> => {
-        const { data } = await AxiosClient.get(apiUrl.listCustomer);
+    getCustomers: async (): Promise<ResponseType<{ count: number; rows: CustomerDTO[] }>> => {
+        const { data } = await AxiosClient.get(apiUrl.listCustomers);
+        return data;
+    },
+    getDevices: async (): Promise<ResponseType<{ count: number; rows: DeviceDTO[] }>> => {
+        const { data } = await AxiosClient.get(apiUrl.listDevices);
         return data;
     },
 };
