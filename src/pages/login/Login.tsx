@@ -8,7 +8,7 @@ import './LoginStyles.scss';
 
 const Login: React.FunctionComponent = () => {
     const tailLayout = {
-        wrapperCol: { offset: 8, span: 16 },
+        wrapperCol: { offset: 9, span: 18 },
     };
 
     const onFinish = async (values: any) => {
@@ -38,7 +38,7 @@ const Login: React.FunctionComponent = () => {
 
     return (
         <Row>
-            <Col span={12} offset={6}>
+            <Col span={8} offset={8}>
                 <Form
                     name="basic"
                     initialValues={{ remember: true }}
