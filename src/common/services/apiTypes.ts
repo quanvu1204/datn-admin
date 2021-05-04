@@ -3,3 +3,16 @@ export interface ResponseType<T> {
     data: T;
     message: string;
 }
+
+export interface CustomerDTO {
+    avatar: string;
+    createdAt: string;
+    deleted: boolean;
+    email: string;
+    firstName: string;
+    id: string;
+    isActive: boolean;
+    lastName: string;
+    sex: string;
+    updatedAt: string;
+}
