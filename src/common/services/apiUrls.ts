@@ -1,3 +1,3 @@
 export const apiUrl = {
-    login: 'admin/login',
+    login: 'auth/admin-login',
 };
