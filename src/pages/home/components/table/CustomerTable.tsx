@@ -32,9 +32,9 @@ const ContentRow: React.FunctionComponent<{
     };
 }> = ({ record }) => (
     <div style={{ display: 'flex', justifyContent: 'space-around', marginLeft: 60 }}>
-        <span>Name: {record.device.name}</span>
-        <span>Ip: {record.device.ip}</span>
-        <span>Status: {record.device.status}</span>
+        <span style={{ width: '30%' }}>Name: {record.device.name}</span>
+        <span style={{ width: '30%' }}>Ip: {record.device.ip}</span>
+        <span style={{ width: '30%' }}>Status: {record.device.status}</span>
     </div>
 );
 
