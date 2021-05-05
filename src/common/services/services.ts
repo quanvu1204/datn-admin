@@ -16,6 +16,14 @@ const services = {
         const { data } = await AxiosClient.get(apiUrl.listDevices);
         return data;
     },
+    delCustomer: async (id: string): Promise<ResponseType<null>> => {
+        const { data } = await AxiosClient.delete(`${apiUrl.delCustomer}${id}`);
+        return data;
+    },
+    delDevice: async (id: string): Promise<ResponseType<null>> => {
+        const { data } = await AxiosClient.delete(`${apiUrl.delDevice}${id}`);
+        return data;
+    },
 };
 
 export default services;

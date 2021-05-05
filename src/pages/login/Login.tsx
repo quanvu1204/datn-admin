@@ -1,16 +1,13 @@
 import React from 'react';
 import { Form, Input, Button, Row, Col, notification } from 'antd';
 
+import logo from '../../common/assets/images/logo.png';
 import { storage } from '../../common/utils/storage';
 import services from '../../common/services/services';
 
 import './LoginStyles.scss';
 
 const Login: React.FunctionComponent = () => {
-    const tailLayout = {
-        wrapperCol: { offset: 9, span: 18 },
-    };
-
     const onFinish = async (values: any) => {
         try {
             const response = await services.login(values);
@@ -38,7 +35,8 @@ const Login: React.FunctionComponent = () => {
 
     return (
         <Row>
-            <Col span={8} offset={8}>
+            <Col span={8} offset={8} style={{ textAlign: 'center', marginTop: 50 }}>
+                <img className="logo" src={logo} style={{ width: 200, height: 200 }} />
                 <Form
                     name="basic"
                     initialValues={{ remember: true }}
@@ -60,7 +58,7 @@ const Login: React.FunctionComponent = () => {
                     >
                         <Input.Password />
                     </Form.Item>
-                    <Form.Item {...tailLayout}>
+                    <Form.Item>
                         <Button type="primary" htmlType="submit">
                             Submit
                         </Button>

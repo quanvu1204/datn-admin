@@ -10,24 +10,39 @@ interface DeviceTable {
     ip: string;
 }
 
-const columns = [
-    { title: 'Name', dataIndex: 'name', key: 'name' },
-    { title: 'Ip', dataIndex: 'ip', key: 'ip' },
-    {
-        title: 'Action',
-        dataIndex: '',
-        key: 'x',
-        render: () => <a>Delete</a>,
-    },
-];
-
 const DeviceTable: React.FunctionComponent = () => {
     const [data, setData] = useState<DeviceTable[]>([]);
 
-    const getListCustomer = async () => {
+    const handleDelete = async (item: DeviceTable) => {
+        const response = await services.delDevice(item.key);
+        if (response.code === 200) {
+            getListDevice();
+        }
+    };
+
+    const columns = [
+        { title: 'Name', dataIndex: 'name', key: 'name' },
+        { title: 'Ip', dataIndex: 'ip', key: 'ip' },
+        {
+            title: 'Action',
+            dataIndex: '',
+            key: 'x',
+            render: (item: DeviceTable) => (
+                <a
+                    onClick={() => {
+                        handleDelete(item);
+                    }}
+                >
+                    Delete
+                </a>
+            ),
+        },
+    ];
+
+    const getListDevice = async () => {
         try {
             const response = await services.getDevices();
-            if (response.data.rows.length) {
+            if (response.code === 200) {
                 const devices = response.data.rows.map((item) => {
                     return {
                         key: item.id,
@@ -43,7 +58,7 @@ const DeviceTable: React.FunctionComponent = () => {
     };
 
     useEffect(() => {
-        getListCustomer();
+        getListDevice();
     }, []);
 
     return <Table columns={columns} dataSource={data} />;

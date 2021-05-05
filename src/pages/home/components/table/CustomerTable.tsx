@@ -13,38 +13,13 @@ interface CustomerTable {
     customerDevice: { id: string; device: DeviceDTO }[];
 }
 
-const columns = [
-    { title: 'Name', dataIndex: 'name', key: 'name' },
-    { title: 'Email', dataIndex: 'email', key: 'email' },
-    { title: 'Sex', dataIndex: 'sex', key: 'sex' },
-    {
-        title: 'Action',
-        dataIndex: '',
-        key: 'x',
-        render: () => <a>Delete</a>,
-    },
-];
-
-const ContentRow: React.FunctionComponent<{
-    record: {
-        id: string;
-        device: DeviceDTO;
-    };
-}> = ({ record }) => (
-    <div style={{ display: 'flex', justifyContent: 'space-around', marginLeft: 60 }}>
-        <span style={{ width: '30%' }}>Name: {record.device.name}</span>
-        <span style={{ width: '30%' }}>Ip: {record.device.ip}</span>
-        <span style={{ width: '30%' }}>Status: {record.device.status}</span>
-    </div>
-);
-
 const CustomerTable: React.FunctionComponent = () => {
     const [data, setData] = useState<CustomerTable[]>([]);
 
     const getListCustomer = async () => {
         try {
             const response = await services.getCustomers();
-            if (response.data.rows.length) {
+            if (response.code === 200) {
                 const customers = response.data.rows.map((item) => {
                     return {
                         key: item.id,
@@ -60,6 +35,46 @@ const CustomerTable: React.FunctionComponent = () => {
             console.log(error);
         }
     };
+
+    const handleDelete = async (item: CustomerTable) => {
+        const response = await services.delCustomer(item.key);
+        if (response.code === 200) {
+            getListCustomer();
+        }
+    };
+
+    const columns = [
+        { title: 'Name', dataIndex: 'name', key: 'name' },
+        { title: 'Email', dataIndex: 'email', key: 'email' },
+        { title: 'Sex', dataIndex: 'sex', key: 'sex' },
+        {
+            title: 'Action',
+            dataIndex: '',
+            key: 'x',
+            render: (item: CustomerTable) => (
+                <a
+                    onClick={() => {
+                        handleDelete(item);
+                    }}
+                >
+                    Delete
+                </a>
+            ),
+        },
+    ];
+
+    const ContentRow: React.FunctionComponent<{
+        record: {
+            id: string;
+            device: DeviceDTO;
+        };
+    }> = ({ record }) => (
+        <div style={{ display: 'flex', justifyContent: 'space-around', marginLeft: 60 }}>
+            <span style={{ width: '30%' }}>Name: {record.device.name}</span>
+            <span style={{ width: '30%' }}>Ip: {record.device.ip}</span>
+            <span style={{ width: '30%' }}>Status: {record.device.status}</span>
+        </div>
+    );
 
     useEffect(() => {
         getListCustomer();

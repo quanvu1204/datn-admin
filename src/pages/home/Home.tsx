@@ -1,14 +1,26 @@
 import React, { useState } from 'react';
-import { Layout, Menu, Breadcrumb } from 'antd';
-import { PieChartOutlined } from '@ant-design/icons';
+import { Layout, Menu, Breadcrumb, Dropdown } from 'antd';
+import { PieChartOutlined, DownOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 
 import logo from '../../common/assets/images/logo.png';
+import { storage } from '../../common/utils/storage';
 
 import DeviceTable from './components/table/DeviceTable';
 import CustomerTable from './components/table/CustomerTable';
 
 const { Header, Content, Footer, Sider } = Layout;
+
+const handleLogout = () => {
+    storage.removeToken('token');
+    window.location.reload();
+};
+
+const menu = (
+    <Menu>
+        <Menu.Item onClick={handleLogout}>Logout</Menu.Item>
+    </Menu>
+);
 
 const Home: React.FunctionComponent = () => {
     const [collapse, setCollapse] = useState(false);
@@ -31,7 +43,20 @@ const Home: React.FunctionComponent = () => {
                 </Menu>
             </Sider>
             <Layout className="site-layout">
-                <Header className="site-layout-background" style={{ padding: 0 }} />
+                <Header
+                    className="site-layout-background"
+                    style={{ padding: 0, display: 'flex', justifyContent: 'flex-end' }}
+                >
+                    <Dropdown overlay={menu}>
+                        <a
+                            className="ant-dropdown-link"
+                            style={{ marginRight: 20 }}
+                            onClick={(e) => e.preventDefault()}
+                        >
+                            beemadmin@assistant.com <DownOutlined />
+                        </a>
+                    </Dropdown>
+                </Header>
                 {tabActivated === 1 ? (
                     <Content style={{ margin: '0 16px' }}>
                         <Breadcrumb style={{ margin: '16px 0' }}>
