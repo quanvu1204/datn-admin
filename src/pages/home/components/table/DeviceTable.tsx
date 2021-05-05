@@ -8,13 +8,11 @@ interface DeviceTable {
     key: string;
     name: string;
     ip: string;
-    status: string;
 }
 
 const columns = [
     { title: 'Name', dataIndex: 'name', key: 'name' },
     { title: 'Ip', dataIndex: 'ip', key: 'ip' },
-    { title: 'Status', dataIndex: 'status', key: 'status' },
     {
         title: 'Action',
         dataIndex: '',
@@ -35,7 +33,6 @@ const DeviceTable: React.FunctionComponent = () => {
                         key: item.id,
                         name: item.name,
                         ip: item.ip,
-                        status: item.status,
                     };
                 });
                 setData(devices);
