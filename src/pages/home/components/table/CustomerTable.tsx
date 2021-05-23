@@ -4,12 +4,13 @@ import { Table } from 'antd';
 
 import { DeviceDTO } from '../../../../common/services/apiTypes';
 import services from '../../../../common/services/services';
-
+import defaultLogo from '../../../../common/assets/images/default.png';
 interface CustomerTable {
     key: string;
     name: string;
     email: string;
     sex: string;
+    avatar: string;
     customerDevice: { id: string; device: DeviceDTO }[];
 }
 
@@ -26,6 +27,7 @@ const CustomerTable: React.FunctionComponent = () => {
                         name: item.firstName + ' ' + item.lastName,
                         email: item.email,
                         sex: item.sex,
+                        avatar: item.avatar,
                         customerDevice: item.customerDevice,
                     };
                 });
@@ -44,6 +46,17 @@ const CustomerTable: React.FunctionComponent = () => {
     };
 
     const columns = [
+        {
+            title: 'Avatar',
+            dataIndex: 'avatar',
+            key: 'avatar',
+            render: (item: string) => (
+                <img
+                    style={{ borderRadius: '50%', height: 50, width: 50, objectFit: 'cover' }}
+                    src={item ? `data:image/png;base64,${item}` : defaultLogo}
+                />
+            ),
+        },
         { title: 'Name', dataIndex: 'name', key: 'name' },
         { title: 'Email', dataIndex: 'email', key: 'email' },
         { title: 'Sex', dataIndex: 'sex', key: 'sex' },
