@@ -1,12 +1,19 @@
 /* eslint-disable react/display-name */
 import React, { useEffect, useState } from 'react';
-import { Table } from 'antd';
+import { Table, Modal } from 'antd';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
 
 import { DeviceDTO } from '../../../../common/services/apiTypes';
 import services from '../../../../common/services/services';
 import defaultLogo from '../../../../common/assets/images/default.png';
-interface CustomerTable {
+import EditModal from '../actions/EditModal';
+
+const { confirm } = Modal;
+
+export interface CustomerTable {
     key: string;
+    firstName: string;
+    lastName: string;
     name: string;
     email: string;
     sex: string;
@@ -16,6 +23,18 @@ interface CustomerTable {
 
 const CustomerTable: React.FunctionComponent = () => {
     const [data, setData] = useState<CustomerTable[]>([]);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [currentUser, setCurrentUser] = useState<CustomerTable>();
+
+    useEffect(() => {
+        getListCustomer();
+    }, []);
+
+    useEffect(() => {
+        if (currentUser) {
+            setIsModalVisible(true);
+        }
+    }, [currentUser]);
 
     const getListCustomer = async () => {
         try {
@@ -25,6 +44,8 @@ const CustomerTable: React.FunctionComponent = () => {
                     return {
                         key: item.id,
                         name: item.firstName + ' ' + item.lastName,
+                        firstName: item.firstName,
+                        lastName: item.lastName,
                         email: item.email,
                         sex: item.sex,
                         avatar: item.avatar,
@@ -32,17 +53,30 @@ const CustomerTable: React.FunctionComponent = () => {
                     };
                 });
                 setData(customers);
+                setIsModalVisible(false);
             }
         } catch (error) {
             console.log(error);
         }
     };
 
-    const handleDelete = async (item: CustomerTable) => {
-        const response = await services.delCustomer(item.key);
-        if (response.code === 200) {
-            getListCustomer();
-        }
+    const showDeleteConfirm = (item: CustomerTable) => {
+        confirm({
+            title: 'Bạn có muốn xoá người dùng này?',
+            icon: <ExclamationCircleOutlined />,
+            okText: 'Có',
+            okType: 'danger',
+            cancelText: 'Không',
+            onOk: async () => {
+                const response = await services.delCustomer(item.key);
+                if (response.code === 200) {
+                    getListCustomer();
+                }
+            },
+            onCancel() {
+                console.log('Cancel');
+            },
+        });
     };
 
     const columns = [
@@ -65,13 +99,24 @@ const CustomerTable: React.FunctionComponent = () => {
             dataIndex: '',
             key: 'x',
             render: (item: CustomerTable) => (
-                <a
-                    onClick={() => {
-                        handleDelete(item);
-                    }}
-                >
-                    Delete
-                </a>
+                <div>
+                    <a
+                        onClick={() => {
+                            setCurrentUser(item);
+                        }}
+                        style={{ marginRight: 20 }}
+                    >
+                        Edit
+                    </a>{' '}
+                    <a
+                        onClick={() => {
+                            showDeleteConfirm(item);
+                        }}
+                        style={{ marginLeft: 20 }}
+                    >
+                        Delete
+                    </a>
+                </div>
             ),
         },
     ];
@@ -89,20 +134,25 @@ const CustomerTable: React.FunctionComponent = () => {
         </div>
     );
 
-    useEffect(() => {
-        getListCustomer();
-    }, []);
-
     return (
-        <Table
-            columns={columns}
-            expandable={{
-                expandedRowRender: (record: CustomerTable) =>
-                    record.customerDevice.map((item, index) => <ContentRow record={item} key={index} />),
-                rowExpandable: (record: any) => record.name !== 'Not Expandable',
-            }}
-            dataSource={data}
-        />
+        <>
+            <Table
+                columns={columns}
+                expandable={{
+                    expandedRowRender: (record: CustomerTable) =>
+                        record.customerDevice.map((item, index) => <ContentRow record={item} key={index} />),
+                    rowExpandable: (record: any) => record.name !== 'Not Expandable',
+                }}
+                dataSource={data}
+            />
+            <EditModal
+                isModalVisible={isModalVisible}
+                setIsModalVisible={setIsModalVisible}
+                setCurrentUser={setCurrentUser}
+                currentUser={currentUser}
+                getListCustomer={getListCustomer}
+            />
+        </>
     );
 };
 

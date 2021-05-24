@@ -16,6 +16,10 @@ const services = {
         const { data } = await AxiosClient.get(apiUrl.listDevices);
         return data;
     },
+    updateCustomer: async (user: any): Promise<ResponseType<null>> => {
+        const { data } = await AxiosClient.put(apiUrl.updateCustomer, user);
+        return data;
+    },
     delCustomer: async (id: string): Promise<ResponseType<null>> => {
         const { data } = await AxiosClient.delete(`${apiUrl.delCustomer}${id}`);
         return data;

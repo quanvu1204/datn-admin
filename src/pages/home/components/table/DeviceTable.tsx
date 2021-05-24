@@ -1,7 +1,8 @@
 /* eslint-disable react/display-name */
 import React, { useEffect, useState } from 'react';
-import { Table } from 'antd';
+import { Modal, Table } from 'antd';
 import firebase from 'firebase';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
 
 import services from '../../../../common/services/services';
 
@@ -15,6 +16,8 @@ export const firebaseConfig = {
     appId: '1:461158918323:web:360aac9f14e9bc23c7e8c6',
     measurementId: 'G-KPG3X9JM89',
 };
+
+const { confirm } = Modal;
 
 interface DeviceTable {
     key: string;
@@ -40,6 +43,22 @@ const DeviceTable: React.FunctionComponent = () => {
         }
     };
 
+    const showDeleteConfirm = (item: DeviceTable) => {
+        confirm({
+            title: 'Bạn có muốn xoá thiết bị này?',
+            icon: <ExclamationCircleOutlined />,
+            okText: 'Có',
+            okType: 'danger',
+            cancelText: 'Không',
+            onOk: async () => {
+                handleDelete(item);
+            },
+            onCancel() {
+                console.log('Cancel');
+            },
+        });
+    };
+
     const columns = [
         { title: 'Name', dataIndex: 'name', key: 'name' },
         { title: 'Ip', dataIndex: 'ip', key: 'ip' },
@@ -50,7 +69,7 @@ const DeviceTable: React.FunctionComponent = () => {
             render: (item: DeviceTable) => (
                 <a
                     onClick={() => {
-                        handleDelete(item);
+                        showDeleteConfirm(item);
                     }}
                 >
                     Delete
