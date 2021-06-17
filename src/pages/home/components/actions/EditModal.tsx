@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Modal, Button, Form, Input, Select, Alert } from 'antd';
+import { Modal, Button, Form, Input, Select, Alert, Upload } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
 
 import { CustomerTable } from '../table/CustomerTable';
 import services from '../../../../common/services/services';
@@ -28,7 +29,7 @@ const EditModal: React.FunctionComponent<ModalProps> = ({
     getListCustomer,
 }) => {
     const [hasError, setHasError] = useState(false);
-
+    const [avatar, setAvatar] = useState('');
     useEffect(() => {
         if (currentUser) {
             form.setFieldsValue({
@@ -37,11 +38,17 @@ const EditModal: React.FunctionComponent<ModalProps> = ({
                 lastName: currentUser.lastName,
                 sex: currentUser.sex,
             });
+            currentUser.avatar && setAvatar(`data:image/png;base64,${currentUser.avatar}`);
         }
     }, [currentUser]);
 
+    useEffect(() => {
+        if (!isModalVisible) {
+            setAvatar('');
+        }
+    }, [isModalVisible]);
+
     const onFinish = async (values: any) => {
-        console.log('Success:', values);
         if (currentUser) {
             const response = await services.updateCustomer({
                 id: currentUser?.key,
@@ -49,6 +56,7 @@ const EditModal: React.FunctionComponent<ModalProps> = ({
                 lastName: values.lastName,
                 email: values.email,
                 sex: values.sex,
+                avatar: avatar.slice(avatar.indexOf(',') + 1),
             });
             if (response.code === 200) {
                 getListCustomer();
@@ -68,11 +76,47 @@ const EditModal: React.FunctionComponent<ModalProps> = ({
     };
 
     const [form] = Form.useForm();
+    const uploadButton = (
+        <div>
+            <PlusOutlined />
+            <div style={{ marginTop: 8 }}>Upload</div>
+        </div>
+    );
+
+    const getBase64 = (img: any, callback: any) => {
+        const reader = new FileReader();
+        reader.addEventListener('load', () => callback(reader.result));
+        reader.readAsDataURL(img);
+    };
+    const handleChange = async (e: any) => {
+        if (e) {
+            getBase64(e.file.originFileObj, (imageUrl: string) => setAvatar(imageUrl));
+        }
+    };
 
     return (
         <Modal title="Chỉnh sửa người dùng" visible={isModalVisible} footer={null} onCancel={handleCancel}>
             {hasError && <Alert message="Có lỗi, hãy thử lại!" style={{ marginBottom: 20 }} type="error" />}
             <Form {...layout} name="basic" form={form} onFinish={onFinish} onFinishFailed={onFinishFailed}>
+                <Form.Item label="Avatar">
+                    <Upload
+                        name="avatar"
+                        listType="picture-card"
+                        className="avatar-uploader"
+                        showUploadList={false}
+                        onChange={handleChange}
+                    >
+                        {avatar ? (
+                            <img
+                                src={avatar}
+                                alt="avatar"
+                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                            />
+                        ) : (
+                            uploadButton
+                        )}
+                    </Upload>
+                </Form.Item>
                 <Form.Item
                     label="Email"
                     name="email"

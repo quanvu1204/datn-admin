@@ -1,6 +1,6 @@
 /* eslint-disable react/display-name */
 import React, { useEffect, useState } from 'react';
-import { Modal, Table } from 'antd';
+import { Input, Modal, Table } from 'antd';
 import firebase from 'firebase';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 
@@ -18,6 +18,7 @@ export const firebaseConfig = {
 };
 
 const { confirm } = Modal;
+const { Search } = Input;
 
 interface DeviceTable {
     key: string;
@@ -27,6 +28,7 @@ interface DeviceTable {
 
 const DeviceTable: React.FunctionComponent = () => {
     const [data, setData] = useState<DeviceTable[]>([]);
+    const [dataSearched, setDataSearched] = useState<DeviceTable[] | undefined>(undefined);
 
     if (!firebase.apps.length) {
         firebase.initializeApp(firebaseConfig);
@@ -96,11 +98,32 @@ const DeviceTable: React.FunctionComponent = () => {
         }
     };
 
+    const onSearch = (e: string) => {
+        if (e) {
+            const users = data.filter((item) => item.name.includes(e) || item.ip.includes(e));
+            setDataSearched(users);
+        } else {
+            setDataSearched(data);
+        }
+    };
+
     useEffect(() => {
         getListDevice();
     }, []);
 
-    return <Table columns={columns} dataSource={data} />;
+    return (
+        <>
+            <Search
+                placeholder="Tìm kiếm thiết bị"
+                allowClear
+                enterButton="Search"
+                style={{ width: '400px', marginBottom: 30 }}
+                size="large"
+                onSearch={onSearch}
+            />
+            <Table columns={columns} dataSource={dataSearched !== undefined ? dataSearched : data} />
+        </>
+    );
 };
 
 export default DeviceTable;

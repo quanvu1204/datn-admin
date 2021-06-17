@@ -1,6 +1,6 @@
 /* eslint-disable react/display-name */
 import React, { useEffect, useState } from 'react';
-import { Table, Modal } from 'antd';
+import { Table, Modal, Input } from 'antd';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 
 import { DeviceDTO } from '../../../../common/services/apiTypes';
@@ -9,6 +9,7 @@ import defaultLogo from '../../../../common/assets/images/default.png';
 import EditModal from '../actions/EditModal';
 
 const { confirm } = Modal;
+const { Search } = Input;
 
 export interface CustomerTable {
     key: string;
@@ -25,7 +26,7 @@ const CustomerTable: React.FunctionComponent = () => {
     const [data, setData] = useState<CustomerTable[]>([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [currentUser, setCurrentUser] = useState<CustomerTable>();
-
+    const [dataSearched, setDataSearched] = useState<CustomerTable[] | undefined>(undefined);
     useEffect(() => {
         getListCustomer();
     }, []);
@@ -121,6 +122,15 @@ const CustomerTable: React.FunctionComponent = () => {
         },
     ];
 
+    const onSearch = (e: string) => {
+        if (e) {
+            const users = data.filter((item) => item.name.includes(e) || item.email.includes(e));
+            setDataSearched(users);
+        } else {
+            setDataSearched(data);
+        }
+    };
+
     const ContentRow: React.FunctionComponent<{
         record: {
             id: string;
@@ -136,14 +146,23 @@ const CustomerTable: React.FunctionComponent = () => {
 
     return (
         <>
+            <Search
+                placeholder="Tìm kiếm người dùng"
+                allowClear
+                enterButton="Search"
+                style={{ width: '400px', marginBottom: 30 }}
+                size="large"
+                onSearch={onSearch}
+            />
             <Table
+                pagination={{ pageSize: 5 }}
                 columns={columns}
                 expandable={{
                     expandedRowRender: (record: CustomerTable) =>
                         record.customerDevice.map((item, index) => <ContentRow record={item} key={index} />),
                     rowExpandable: (record: any) => record.name !== 'Not Expandable',
                 }}
-                dataSource={data}
+                dataSource={dataSearched !== undefined ? dataSearched : data}
             />
             <EditModal
                 isModalVisible={isModalVisible}
